@@ -1,0 +1,110 @@
+.\"/*
+.\" * Copyright (c) 2005 MontaVista Software, Inc.
+.\" *
+.\" * All rights reserved.
+.\" *
+.\" * Author: Dave Jiang (djiang@mvista.com)
+.\" *
+.\" * This software licensed under BSD license, the text of which follows:
+.\" * 
+.\" * Redistribution and use in source and binary forms, with or without
+.\" * modification, are permitted provided that the following conditions are met:
+.\" *
+.\" * - Redistributions of source code must retain the above copyright notice,
+.\" *   this list of conditions and the following disclaimer.
+.\" * - Redistributions in binary form must reproduce the above copyright notice,
+.\" *   this list of conditions and the following disclaimer in the documentation
+.\" *   and/or other materials provided with the distribution.
+.\" * - Neither the name of the MontaVista Software, Inc. nor the names of its
+.\" *   contributors may be used to endorse or promote products derived from this
+.\" *   software without specific prior written permission.
+.\" *
+.\" * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+.\" * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+.\" * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+.\" * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+.\" * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+.\" * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+.\" * THE POSSIBILITY OF SUCH DAMAGE.
+.\" */
+.TH SCSI_HOTSWAP_BY_ID 3 2005-17-05 "scsihotswap Man Page" "SCSI Hotswap"
+.SH NAME
+scsi_hotswap_by_id \- SCSI Hotswapping by SCSI ID set
+.SH SYNOPSIS
+.B #include <libscsihotswap.h>
+.sp
+.BI "int scsi_hotswap_by_id(enum scsi_hotswap_action " action ", unsigned int " host ", unsigned int " channel ", unsigned int " id ", unsigned int " lun);
+.SH DESCRIPTION
+The
+.B scsi_hotswap_by_id
+function is used to perform hotswap action (i.e. hot insert, hot remove) on 
+SCSI or FibreChannel disks.  
+.PP
+The
+.I action
+parameter provides the various actions to be performed. The following values
+can be passed in:
+.IP
+.RS
+.ne 18
+.nf
+.ta 4n 30n 33n
+SCSI_HOTSWAP_INSERT
+SCSI_HOTSWAP_REMOVE 
+SCSI_HOTSWAP_BLKDEV_REMOVE
+.ta
+.fi
+.RE
+.IP
+.PP
+The SCSI_HOTSWAP_INSERT
+.I action
+value invokes the hot insertion of a SCSI disk. It initiate the kernel to probe
+the disk and performs the hot insertion.
+.PP
+The SCSI_HOTSWAP_REMOVE 
+.I action
+value invokes the hot removal of a SCSI disk. It initiate the kernel to remove 
+the disk. However, this action does not take into consideration of filesystem
+being mounted on the disk or any open files against the device node. This 
+.I action
+should only be used if the disk is not in use by the kernel.
+.PP
+The SCSI_HOTSWAP_BLKDEV_REMOVE 
+.I action
+value invokes the hot removal of a SCSI disk. However, it also performs the
+following: 1) force unmount any filesystem mounted on the disk. 2) remove
+any partitions from any MD groups. 3) removes any open file handles on the
+device nodes. This command is equivalent of a forced removal of the from the
+kernel.
+.PP
+The parameter
+.I host
+is the SCSI host number of the SCSI controller enumerated by the kernel 
+starting from 0.
+.PP
+The parameter
+.I channel
+is the SCSI channel or bus number enumerated by the kernel starting from 0.
+.PP
+The parameter
+.I id
+is the SCSI id or target number of the device enumerated by the kernel 
+starting from 0.
+.PP
+The parameter
+.I lun
+is the SCSI lun number on the device enumerated by the kernel starting from 0.
+.PP
+.SH RETURN VALUE
+This call returns the value 0 if successful, otherwise an error is returned.
+.PP
+.SH ERRORS
+The errors are undocumented.
+.SH "SEE ALSO"
+.BR scsi_hotswap_by_ieee_wildcard (3)
+.PP
